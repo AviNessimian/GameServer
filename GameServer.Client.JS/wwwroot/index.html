@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>WebSocket Client</title>
+    </head>
+<body>
+    <div>
+        <div id="echo-configuration">
+            <br>
+
+            <label for="location">Location:</label><br>
+            <input type="text" id="location" value="ws://localhost:5555"><br>
+
+            <br>
+
+            <button id="connect">Connect</button>
+            <button id="disconnect">Disconnect</button>
+            <hr>
+            
+            <h3>Login</h3>
+            <label for="deviceId">DeviceId:</label><br>
+            <input type="text" id="deviceId" value="1"><br>
+            <br>
+            <button id="login">Login</button>
+            <br><br>
+
+            <hr>
+            
+            <h3>Update Coins</h3>
+            <label for="coins">Coins To Add:</label><br>
+            <input type="text" id="coins" value="0"><br>
+            <br>
+            <button id="updateCoins">Update Coins</button>
+
+            <br><br>
+            <hr>
+            <br>
+        </div>
+        <div id="echo-output">
+            <label>Log:</label>
+            <div id="console"></div>
+            <button id="clear" style="position: relative; top: 3px;">Clear</button>
+        </div>
+    </div>
+    <script src="js/site.js"></script>
+</body>
+</html>
