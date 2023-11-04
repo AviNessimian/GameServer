@@ -40,24 +40,31 @@ internal class WebSocketMiddleware
 
         var webSocket = await context.WebSockets.AcceptWebSocketAsync();
 
-        IConnection webSocketConnection = new WebSocketConn(webSocket, _options, (connectionId, binaryMassage) =>
+        IConnection webSocketConnection = new WebSocketConn(webSocket, _options, async (connectionId, binaryMassage) =>
         {
-            var massage = Encoding.UTF8.GetString(binaryMassage);
-            if (string.IsNullOrWhiteSpace(massage) || !massage.Contains('/'))
+            try
             {
-                _logger.LogWarning("route not found, {Massage}", massage);
-                return;
-            }
+                var massage = Encoding.UTF8.GetString(binaryMassage);
+                if (string.IsNullOrWhiteSpace(massage) || !massage.Contains('/'))
+                {
+                    _logger.LogWarning("route not found, {Massage}", massage);
+                    return;
+                }
 
-            var routeSplit = massage.Split('/');
-            var route = routeSplit[0].ToLower();
-            if (!_handlers.ContainsKey(route))
+                var routeSplit = massage.Split('/');
+                var route = routeSplit[0].ToLower();
+                if (!_handlers.ContainsKey(route))
+                {
+                    _logger.LogWarning("route handler not exists, {Massage}", massage);
+                    return;
+                }
+
+                await _handlers[route].Handle(connectionId, routeSplit[1]);
+            }
+            catch (Exception ex)
             {
-                _logger.LogWarning("route handler not exists, {Massage}", massage);
-                return;
+                _logger.LogError(ex.Message, ex);
             }
-
-            _handlers[route].Handle(connectionId, routeSplit[1]).GetAwaiter().GetResult();
         });
 
         _connectionsStore.Add(webSocketConnection);
